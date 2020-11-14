@@ -1,0 +1,53 @@
+{% extends 'base/layout.html'%}
+
+{% block banner %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<!--
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css" rel="stylesheet"> <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js" integrity="sha512-nhY06wKras39lb9lRO76J4397CH1XpRSLfLJSftTeo3+q2vP7PaebILH9TqH+GRpnOhfAGjuYMVmVTOZJ+682w==" crossorigin="anonymous"></script>
+-->
+<div class="container-fluid" >
+ <div class="row-fluid">
+  <div class="col-md-offset-4 col-md-4" id="box">
+   <h2 class="text-center text-info">Đăng nhập</h2>
+   <hr>
+   <form class="form-horizontal" action="" method="get" id="login_form">
+    <fieldset>
+     <div class="form-group">
+      <div class="col-md-12">
+       <div class="input-group "> <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span> <input name="first_name" placeholder="Username" class="form-control" type="text">
+       </div>
+      </div>
+     </div>
+     <div class="form-group">
+      <div class="col-md-12">
+       <div class="input-group"> <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span> <input name="email" placeholder="Password" class="form-control" type="text">
+       </div>
+      </div>
+     </div>
+     <div class="form-group">
+      <div class="col-md-12">
+       <button type="submit" class="btn btn-md btn-danger pull-right">Đăng nhập </button>
+      </div>
+     </div>
+      <div class="form-group">
+       <div class="col-md-12">
+                <a href="{{ url_for('login_admin')}}">Lối tắt đến trang quản quản trị !!!</a>
+       </div>
+     </div>
+     <div class="form-group">
+       <div class="col-md-12">
+
+                <a href="#">Đăng ký !</a>
+       </div>
+     </div>
+
+    </fieldset>
+
+
+   </form>
+  </div>
+ </div>
+</div>
+{% endblock %}
