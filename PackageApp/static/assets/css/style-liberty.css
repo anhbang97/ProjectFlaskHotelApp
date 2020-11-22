@@ -9672,9 +9672,6 @@ p.white {
     margin-right: auto;
     margin-left: auto; } }
 
-@media (min-width: 1280px) {
-  .container {
-    max-width: 1200px; } }
 
 /*-- //container --*/
 .btn-style {

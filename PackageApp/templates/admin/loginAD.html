@@ -1,14 +1,21 @@
-<h1 class="text-center text-info">ĐĂNG NHẬP QUẢN TRỊ</h1>
-<form method="post" action="{{ url_for('login_admin') }}" >
-    <div class="form-group">
-        <label>Username</label>
-        <input type="text" name="username" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label>Password</label>
-        <input type="password" name="password" class="form-control" />
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Đăng nhập" class="btn btn-danger" />
-    </div>
-</form>
+<h1 class="text-center text-info well"  >ĐĂNG NHẬP QUẢN TRỊ</h1>
+
+<div class="bg-success text-white">
+    <form class="well bg-dark text-white" method="post" action="{{ url_for('login_admin') }}" >
+        <div class="form-group  ">
+            <label>Tên đăng nhâp</label>
+            <input type="text" name="username" class="form-control " />
+        </div>
+        <div class="form-group ">
+            <label>Mật khẩu</label>
+            <input type="password" name="password" class="form-control " />
+        </div>
+        <div class="form-group  ">
+            <input type="submit" value="Đăng nhập" class="btn btn-danger " />
+        </div>
+    </form>
+
+</div>
+
+
+
