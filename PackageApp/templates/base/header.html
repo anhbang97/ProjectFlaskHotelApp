@@ -32,8 +32,11 @@
 							Rooms <span class="fa fa-angle-down"></span>
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="{{url_for('room')}}">Phòng</a>
-							<a class="dropdown-item" href="{{url_for('room_single')}}">Room Single</a>
+							<a class="dropdown-item" href="{{url_for('room')}}">Tất cả phòng</a>
+							<a class="dropdown-item" href="{{url_for('room_standard')}}">Phòng Standard</a>
+							<a class="dropdown-item" href="{{url_for('room_superior')}}">Phòng Superior</a>
+							<a class="dropdown-item" href="{{url_for('room_deluxe')}}">Phòng Deluxe</a>
+							<a class="dropdown-item" href="{{url_for('room_suite')}}">Phòng Suite</a>
 
 						</div>
 					</li>
@@ -52,7 +55,7 @@
 					</li>
 				</ul>
 				<a href="{{url_for('booking')}}" class="ml-3 book btn btn-secondary btn-style">Đặt phòng</a>
-                <a href="{{url_for('login_from_client')}}" class="ml-3 book btn btn-secondary btn-style">Đăng nhập</a>
+              	<a href="{{url_for('login_from_client')}}" class="ml-3 book btn btn-secondary btn-style">Đăng nhập</a>
 			</div>
 		</div>
 	</nav>

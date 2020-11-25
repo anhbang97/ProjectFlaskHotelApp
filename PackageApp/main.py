@@ -20,9 +20,24 @@ def services():
     return render_template("services.html")
 
 
-@app.route("/room-single")
-def room_single():
-    return render_template("room-single.html")
+@app.route("/room-standard")
+def room_standard():
+    return render_template("room-standard.html")
+
+
+@app.route("/room-deluxe")
+def room_deluxe():
+    return render_template("room-deluxe.html")
+
+
+@app.route("/room-superior")
+def room_superior():
+    return render_template("room-superior.html")
+
+
+@app.route("/room-suite")
+def room_suite():
+    return render_template("room-suite.html")
 
 
 @app.route("/contact")
@@ -42,7 +57,7 @@ def blog():
 
 @app.route("/blog-single")
 def blog_single():
-    return render_template("blog.html")
+    return render_template("blog-single.html")
 
 
 @app.route("/booking")
@@ -53,6 +68,11 @@ def booking():
 @app.route("/login-client")
 def login_from_client():
     return render_template("loginCL.html")
+
+
+@app.route("/register")
+def register():
+    return render_template("register.html")
 
 
 @app.route("/login-admin", methods=["GET", "POST"])

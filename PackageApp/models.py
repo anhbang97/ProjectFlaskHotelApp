@@ -147,7 +147,6 @@ class DetailsOfBill(db.Model):  # Chi tiết hóa đơn
 # -------------------------- Phần ModelView --------------------------------------
 
 
-
 class UserModelView(ModelView):
     column_display_pk = True  # HIển thị khóa chính ra
 
