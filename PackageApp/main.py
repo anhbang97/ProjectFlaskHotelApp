@@ -1,7 +1,8 @@
-from flask import render_template, redirect, request
+from flask import render_template, redirect
 from PackageApp import app, login
-from PackageApp.models import *
 from flask_login import login_user
+from PackageApp.admin import *
+
 import hashlib
 
 
@@ -77,7 +78,7 @@ def register():
 
 @app.route("/login-admin", methods=["GET", "POST"])
 def login_admin():
-    if request.method == "POST":
+    if request.method == 'POST':
         username = request.form.get("username")
         password = request.form.get("password", "")
         password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())

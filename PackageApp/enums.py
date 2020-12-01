@@ -1,6 +1,21 @@
 import enum # Kiểu liệt kê
 
 
+class InteriorDesignStyle(enum.Enum): # Các phong cách thiết kế của khách sạn
+    ModernAndSimple = "Hiện đại và đơn giản"
+    ModernAndLuxurious = "Hiện đại và sang trọng"
+    ClassicAndLuxurious = "Cổ điển và sang trọng"
+    NewClassical = "Tân cổ điển"
+    Classic = "Cổ điển"
+
+
+class ImportFromCountry(enum.Enum):# Khách sạn chỉ nhập khẩu từ 4 nước Anh/Pháp/Ý/Đức
+    England = "Anh Quốc"
+    France = "Pháp"
+    Italian = "Ý"
+    Germany = "Đức"
+
+
 class StatusOfRoom(enum.Enum):
     isVacant = "Phòng đang trống"
     isOccupied = "Phòng đang có khách"
@@ -19,3 +34,7 @@ class AvailableTypeOfBed(enum.Enum): # Các chuẩn kiểu giường chỉ có t
     DBL = "DOUBLE BED ROOM"
     TRPL = "TRIPLE BED ROOM"
 
+
+class CustommerTypeCheck(enum.Enum):
+    ForeignCustomers = "Khách nước ngoài"
+    DomesticCustomers = "Khách trong nước"
