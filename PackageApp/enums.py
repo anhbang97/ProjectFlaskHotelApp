@@ -35,3 +35,5 @@ class AvailableTypeOfBed(enum.Enum): # Các chuẩn kiểu giường chỉ có t
     TRPL = "TRIPLE BED ROOM"
 
 
+
+

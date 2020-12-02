@@ -1,0 +1,76 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+     <section class="container">
+
+               <form class="form" >
+                <div class="row" >
+                <div class="well col-lg-3" style="padding:5px; margin: 43px;" align="center">
+                    <div class="form-group">
+                        <label class="col-form-label">TÌM TÊN PHÒNG</label>
+                        <input type="text" name="name" placeholder="Nhập tên phòng bạn muốn tìm ..." class="form-control">
+                    </div>
+                </div>
+                <div class="well col-lg-3 " style="padding:5px; margin: 43px;" align="center">
+                    <div class="form-group">
+                        <label class="col-form-label">TÌM LOẠI PHÒNG</label>
+                        <input type="text" name="kor" placeholder="Nhập loại phòng bạn muốn tìm ..." class="form-control">
+                    </div>
+                </div>
+                <div class="well col-lg-3" style="padding:5px; margin: 43px;" align="center">
+                    <div class="form-group">
+                        <label class="col-form-label">CHỌN TÌM TÌNH TRẠNG PHÒNG</label>
+                        <select name="status" class="form-control">
+                             <option value="">None</option>
+
+                                {% for tt in room_status %}
+                                <option value="{{ tt.value }}">{{ tt.value }}</option>
+                                {% endfor %}
+
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" align="center">
+                <input type="submit" class="btn btn-success btn-lg" value="Tra tìm">
+
+            </div>
+        </form>
+
+
+
+
+        <table class="table well">
+            <caption><h1>DANH SÁCH CÁC PHÒNG</h1></caption>
+            <thead>
+            <tr class="table__tr">
+                <td class="table__td">STT</td>
+                <td class="table__td">Mã Phòng</td>
+                <td class="table__td">Tên Phòng</td>
+                <td class="table__td">Loại Phòng</td>
+                <td class="table__td">Trạng Thái</td>
+                <td class="table__td">Số Lượng</td>
+            </tr>
+            </thead>
+            <tbody class="table__tobdy">
+             {% for b in room %}
+                <tr class="table__tr">
+                    <td class="table__td">{{ loop.index0 + 1 }}</td>
+                    <td class="table__td">{{ b.id }}</td>
+                    <td class="table__td">{{ b.room_name }}</td>
+                    <td class="table__td">{{ b.KindsOfRoom.kor_name }}</td>
+                    <td class="table__td">{{ b.room_status.value }}</td>
+                    <td class="table__td">{{ b.room_amount }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+
+
+
+
+
+
+{% endblock %}

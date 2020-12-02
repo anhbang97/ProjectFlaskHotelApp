@@ -96,90 +96,64 @@ class Room(db.Model):  # Phòng
     def __str__(self):
         return self.room_name
 
-#-------------------------------------------------------------
-class Parameter(db.Model):  # Tham số
-    __tablename__ = "parameter"
 
-    id = Column(Integer,primary_key=True,autoincrement=True)
-    number_custommer_max = Column(Integer, nullable=False)
-    guest_coefficient = Column(Float, nullable=False)
-    surcharge = Column(Integer, nullable=False)
-    rental_slips = relationship('RentalSlip', backref="Parameter", lazy=True)
-    custommer_type = relationship('CustommerType', backref="Parameter", lazy=True)
+# Bảng loại khách hàng
+class CustommerType(db.Model):
+    _tablename__ ="custommertype"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    customer_type_name = Column(String(50), nullable=False)
+    coefficient = Column(Float, nullable=False)
+    note = Column(String(50), nullable=False)
+    rentSlipDetails = relationship('RentalSlip', backref="CustomerType", lazy=True)
 
     def __str__(self):
-        return self.number_custommer_max.__str__() + " người  / " + self.surcharge.__str__() + " %"
+        return self.customer_type_name
 
 
-# ---------------------------------------------------------------------------------
-class RentalSlip(db.Model):  # Phiếu thuê phòng
+# Bảng phụ thu
+class Surcharge(db.Model):
+    __tablename__ = "surcharqe"
+    id = Column(Integer,primary_key=True,autoincrement=True)
+    surcharge_rate = Column(Integer, nullable=False) # Tỉ lệ phụ thu
+    surcharge_amount = Column(Integer, nullable=False) # Số lượng phụ thu
+
+    rentalSlip = relationship('RentalSlip', backref="Surcharge", lazy=True)
+
+    def __str__(self):
+        return self.surcharge_amount.__str__() + " người ~ " + self.surcharge_rate.__str__() + " %"
+
+
+# Bảng phiếu thuê
+class RentalSlip(db.Model):
     __tablename__ = "rentalslip"
     id = Column(Integer, primary_key=True, autoincrement=True)
+    customer_name = Column(String(50), nullable=False)
     hire_start_date = Column(DateTime, nullable=False)
     room_id = Column(Integer, ForeignKey(Room.id), nullable=False)
-    bills = relationship('Bill', backref="RentalSlip", lazy=True)
-    parameter_amount = Column(Integer, ForeignKey(Parameter.id), nullable=False)
-    details = relationship('DetailsRentalSlip', backref="RentalSlip", lazy=True)
-
-    def __str__(self):
-        return self.room_id.__str__()
-
-
-# ---------------------------------------------------------------------------------
-class CustommerType(db.Model):  # Loại khách hàng
-    __tablename__ = "custommertype"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    custommer_type_name = Column(String(50), nullable=False)
-    parameter_id = Column(Integer, ForeignKey(Parameter.id),nullable=False)
-    details_t = relationship('DetailsRentalSlip', backref="CustommerType", lazy=True)
-
-    def get_id(self):
-        return self.id
-
-    def __str__(self):
-        return self.custommer_type_name
-    """
-    STOP >>>?
-    """
-
-
-# ---------------------------------------------------------------------------------
-class DetailsRentalSlip(db.Model):  # Chi tiết phiếu thuê phòng
-    __tablename__ = "detailsrentalslip"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    custommer_name = Column(String(50), nullable=False)
-    custommer_type_id = Column(Integer, ForeignKey(CustommerType.id), nullable=False)
+    surcharge_id = Column(Integer, ForeignKey(Surcharge.id), nullable=False)
+    customer_type_id = Column(Integer, ForeignKey(CustommerType.id), nullable=False)
     identity_card = Column(String(50), nullable=False)
-    address = Column(String(255), nullable=False)
-    rental_slip_id = Column(Integer, ForeignKey(RentalSlip.id), nullable=False)
+    address = Column(String(50), nullable=False)
+    bills = relationship('Bill', backref="RentalSlip", lazy=True)
 
-    pass
-
-
+    def __str__(self):
+        return self.id.__str__()
 
 
 # ---------------------------------------------------------------------------------
 class Bill(db.Model):  # Hóa đơn
     __tablename__ = "bill"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    custommer_name = Column(String(50), nullable=False)
-    custommer_address = Column(String(255), nullable=False)
-    date_of_payment = Column(DateTime, nullable=False, default=0)
-    value = Column(Integer, nullable=False, default=0)
-    rental_slip_id = Column(Integer, ForeignKey(RentalSlip.id), nullable=False)
-    pass
+    date_of_payment = Column(Integer, nullable=False, default=0)  # ngày thanh toán
+    total_value = Column(Integer, nullable=False, default=0)  # tổng trị giá
+    into_money = Column(Integer, nullable=False, default=0)  # Thành tiền
+    rentSlip_id = Column(Integer, ForeignKey(RentalSlip.id), nullable=False)
+
+    def __str__(self):
+        return self.customer_name
 
 
 # ---------------------------------------------------------------------------------
-class DetailsOfBill(db.Model):  # Chi tiết hóa đơn
-    __tablename__ = "detailsofbill"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    bill_id = Column(Integer, ForeignKey(Bill.id), nullable=False)
-    room_id = Column(Integer, ForeignKey(Room.id), nullable=False)
-    number_of_rental_days = Column(Integer, nullable=False)
-    unit_price = Column(Integer, nullable=False, default=0)
-    into_money = Column(Integer, nullable=False)
-    pass
 
 
 # ham chay khoi tao database len mysql

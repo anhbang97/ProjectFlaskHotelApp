@@ -3,11 +3,11 @@ from flask_admin import BaseView, expose
 from wtforms import validators
 from flask_login import current_user, logout_user
 from markupsafe import Markup
-
+from urllib import request
 from PackageApp.models import *
 from PackageApp import admin, db, dao
 from flask import redirect, request, session
-
+from datetime import datetime
 import hashlib
 
 
@@ -84,10 +84,11 @@ class RoomModelView(ModelView):
     column_display_pk = True  # HIển thị khóa chính ra
 
     column_labels = dict(id="Mã phòng", room_name="Tên phòng", KindsOfRoom="Loại phòng  [Setup]",
-                         TypeOfBed="Loại giường  [Setup]",
-                         Services="Dịch vụ  [Setup]", img_kor="Hình ảnh loại phòng", img_tob="Hình ảnh loại giường",
+                         TypeOfBed="Loại giường  [Setup]", Services="Dịch vụ  [Setup]",
+                         img_kor="Hình ảnh loại phòng", img_tob="Hình ảnh loại giường",
                          room_status="Tình trạng phòng", room_amount="Số lượng phòng", notes="Ghi chú")
-    form_columns = ("room_name", "KindsOfRoom", "TypeOfBed", "Services", "img_kor", "img_tob", "room_status", "room_amount", "notes")
+    form_columns = ("room_name", "KindsOfRoom", "TypeOfBed", "Services", "img_kor", "img_tob", "room_status",
+                    "room_amount", "notes")
     form_excluded_columns = ['rental_slips']
 
     def _room_status_formatter(view, context, model, name):
@@ -114,61 +115,62 @@ class RoomModelView(ModelView):
         'img_tob': base64_img_tob_formatter,
         'room_status': _room_status_formatter
 
-     }
-
+    }
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)")
 
 # ------
+class SurchargeModelView(ModelView):
+    column_display_pk = True  # HIển thị khóa chính ra
+    column_display_pk = True
+    column_list = ["surcharge_amount", "surcharge_rate"]
+    column_labels = {
+        "surcharge_amount": "Số lượng phụ thu",
+        "surcharge_rate": "Tỷ lệ Phụ thu theo (%)"
+    }
+    form_excluded_columns = ['rentalSlip']
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)")
+
+
+
 class CustommerTypeModelView(ModelView):
     column_display_pk = True  # HIển thị khóa chính ra
-
-    column_labels = dict(id="Mã loại khách hàng", custommer_type_name="Loại khách hàng", Parameter="Tham số")
-    form_columns = ("custommer_type_name", "Parameter")
-    form_excluded_columns= ['details_t']
+    form_columns = ('customer_type_name', 'coefficient', 'note')
+    column_labels = {
+        "id": "Mã loại khách",
+        "customer_type_name": "Loại khách hàng",
+        "coefficient": "Hệ số loại khách",
+        "note": "Ghi chú thêm"}
 
     def is_accessible(self):
         return current_user.is_authenticated and \
                (current_user.user_roles == "Admin-(Quản trị viên)")
 
-    """
-    STOP >>>>> ?
-    """
 
-
-# ------
 class RentalSlipModeView(ModelView):
     column_display_pk = True  # HIển thị khóa chính ra
-    column_labels = dict(id="Mã phiếu thuê", hire_start_date="Ngày bắt đầu thuê", Room="Phòng thuê",Parameter="Số lượng phụ thu")
-    form_columns = ("hire_start_date", "Room", "Parameter")
-    form_excluded_columns = ['bills', 'details']
+    column_labels = {
+        "id": "Mã phiếu",
+        "Room": "Phòng thuê",
+        "hire_start_date": "Ngày thuê",
+        "customer_name": "Khách thuê",
+        "Surcharge": "SL và PT khi thuê",
+        "CustomerType": "Loại khách",
+        "identity_card": "Chứng minh thư",
+        "address": "Địa chỉ"}
+    form_excluded_columns = ['bills']
 
     def on_model_change(self, form, RentalSlip, is_created):
         room = Room.query.get(form.Room.data.id)
         if form.Room.data.room_status == StatusOfRoom.isOccupied:
             raise validators.ValidationError("Phòng đã có người đặt")
         else:
-            room.room_status = StatusOfRoom.isVacant
+            room.room_status = StatusOfRoom.isOccupied
             db.session.add(room)
             db.session.commit()
-    pass
-
-
-# ------
-class DetailsRentalSlipModelView(ModelView):
-    column_display_pk = True  # HIển thị khóa chính ra
-    column_labels = dict(id="Mã chi tiết phiếu thuê", custommer_name="Họ tên khách hàng",CustommerType="Loại khách hàng",
-                         identity_card="Chứng minh thư", address="Địa chỉ", RentalSlip="Phiếu thuê")
-
-    form_columns = ("custommer_name", "CustommerType", "identity_card", "address", "RentalSlip")
-    pass
-
-
-# ------
-class ParameterModelView(ModelView):
-    column_display_pk = True  # HIển thị khóa chính ra
-    column_labels = dict(id="Mã tham số phụ thu", number_custommer_max="Số khách hàng",
-                         guest_coefficient="Hệ số khách", surcharge= "Phụ phí thu (%)")
-    form_columns = ("number_custommer_max", "guest_coefficient", "surcharge")
-    form_excluded_columns = ['rental_slips', 'custommer_type']
 
     def is_accessible(self):
         return current_user.is_authenticated and \
@@ -176,15 +178,20 @@ class ParameterModelView(ModelView):
 
 
 # ------
-class BillModelView(ModelView):
-    column_display_pk = True  # HIển thị khóa chính ra
-    pass
+class BillModelView(AuthenticatedView):
+    column_display_pk = True
+    column_labels = {
+            "id": "Mã hóa đơn",
+            "date_of_payment": "Ngày thanh toán",
+            "total_value": "Tổng trị giá",
+            "into_money": "Thành tiền",
+            "RentalSlip": "Mã phiếu thuê"
+    }
+    form_excluded_columns = ['date_of_payment', 'total_value', 'into_money']
 
-
-# ------
-class DetailsOfBillModelView(ModelView):
-    column_display_pk = True  # HIển thị khóa chính ra
-    pass
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)")
 
 
 # ------
@@ -192,6 +199,10 @@ class AboutUsView(BaseView):
     @expose("/")
     def index(self):
         return self.render("admin/about-us.html")
+
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)")
 
 
 # ------
@@ -205,17 +216,52 @@ class LogoutAdminView(BaseView):
         return current_user.is_authenticated
 
 
+class RoomListView(BaseView):
+    @expose("/")
+    def index(self):
+        r_name = request.args.get("name")
+        k_o_r_id = request.args.get("kor")
+        r_status = request.args.get("status")
+        r_amount = request.args.get("amount")
+
+        return self.render("admin/room-list.html",
+                           room=dao.dao_room_info(room_name=r_name, kinds_of_room_id=k_o_r_id,
+                                                  room_status=r_status, room_amount=r_amount),
+                           room_status=StatusOfRoom)
+
+
+class ReportView(BaseView):
+    @expose("/")
+    def __index__(self):
+        return self.render("admin/report-tatistics.html")
+
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)")
+
+
+class ChangeTheRolesView(BaseView):
+    @expose("/")
+    def __index__(self):
+        return self.render("admin/change-the-rules.html")
+
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)")
+
+
 # --------------------------------------------------------------------------------
+admin.add_view(RoomListView(name="Danh sách các phòng"))
 admin.add_view(KindsOfRoomModelView(KindsOfRoom, db.session, name="Loại phòng"))
 admin.add_view(TypeOfBedModelView(TypeOfBed, db.session, name="Loại giường"))
 admin.add_view(ServicesModelView(Services, db.session, name="Dịch vụ"))
 admin.add_view(RoomModelView(Room, db.session, name="Quản lý phòng"))
 admin.add_view(CustommerTypeModelView(CustommerType, db.session, name="Loại khách hàng"))
-admin.add_view(RentalSlipModeView(RentalSlip, db.session, name="Phiếu thuê"))
-admin.add_view(DetailsRentalSlipModelView(DetailsRentalSlip, db.session, name="Chi tiết phiếu thuê"))
+admin.add_view(RentalSlipModeView(RentalSlip, db.session, name="Phiếu thuê phòng"))
 admin.add_view(BillModelView(Bill, db.session, name="Hóa đơn"))
-admin.add_view(DetailsOfBillModelView(DetailsOfBill, db.session, name="Chi tiết hóa đơn"))
-admin.add_view(ParameterModelView(Parameter, db.session, name="Tham số phụ thu"))
+admin.add_view(SurchargeModelView(Surcharge, db.session, name="Bảng phụ thu"))
 admin.add_view(UserModelView(User, db.session, name="Người dùng"))
+admin.add_view(ReportView(name="Báo báo thống kê"))
+admin.add_view(ChangeTheRolesView(name="Thay đổi quy định"))
 admin.add_view(AboutUsView(name="Giới thiệu"))
 admin.add_view(LogoutAdminView(name="Đăng xuất"))
