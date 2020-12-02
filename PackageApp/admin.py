@@ -146,7 +146,7 @@ class RentalSlipModeView(ModelView):
         if form.Room.data.room_status == StatusOfRoom.isOccupied:
             raise validators.ValidationError("Phòng đã có người đặt")
         else:
-            room.room_status = StatusOfRoom.isOccupied
+            room.room_status = StatusOfRoom.isVacant
             db.session.add(room)
             db.session.commit()
     pass
@@ -169,7 +169,10 @@ class ParameterModelView(ModelView):
                          guest_coefficient="Hệ số khách", surcharge= "Phụ phí thu (%)")
     form_columns = ("number_custommer_max", "guest_coefficient", "surcharge")
     form_excluded_columns = ['rental_slips', 'custommer_type']
-    pass
+
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)")
 
 
 # ------
@@ -182,8 +185,6 @@ class BillModelView(ModelView):
 class DetailsOfBillModelView(ModelView):
     column_display_pk = True  # HIển thị khóa chính ra
     pass
-
-
 
 
 # ------

@@ -1,5 +1,5 @@
 from PackageApp import db, StatusOfRoom, AvailableKindsOfRoom, AvailableTypeOfBed, InteriorDesignStyle, \
-    ImportFromCountry, CustommerTypeCheck
+    ImportFromCountry
 from sqlalchemy import Column, String, Integer, Boolean, Enum, ForeignKey, DateTime,Float
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
@@ -14,7 +14,6 @@ class User(db.Model, UserMixin):
     user_name = Column(String(50), nullable=False)  # Tên đăng nhập
     user_password = Column(String(50), nullable=False)  # Mật khẩu
     user_roles = Column(String(50), nullable=False)  # Phân quyền quản trị
-
 
     def get_id(self):
         return self.id
@@ -90,8 +89,12 @@ class Room(db.Model):  # Phòng
     notes = Column(String(50), nullable=True)
 
     rental_slips = relationship('RentalSlip', backref="Room", lazy=True)
-    pass
 
+    def get_id(self):
+        return self.id
+
+    def __str__(self):
+        return self.room_name
 
 #-------------------------------------------------------------
 class Parameter(db.Model):  # Tham số
@@ -117,19 +120,24 @@ class RentalSlip(db.Model):  # Phiếu thuê phòng
     bills = relationship('Bill', backref="RentalSlip", lazy=True)
     parameter_amount = Column(Integer, ForeignKey(Parameter.id), nullable=False)
     details = relationship('DetailsRentalSlip', backref="RentalSlip", lazy=True)
-    pass
+
+    def __str__(self):
+        return self.room_id.__str__()
 
 
 # ---------------------------------------------------------------------------------
 class CustommerType(db.Model):  # Loại khách hàng
     __tablename__ = "custommertype"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    custommer_type_name = Column(Enum(CustommerTypeCheck), nullable=False)
+    custommer_type_name = Column(String(50), nullable=False)
     parameter_id = Column(Integer, ForeignKey(Parameter.id),nullable=False)
     details_t = relationship('DetailsRentalSlip', backref="CustommerType", lazy=True)
 
-    #def __str__(self):
-    #    return self.custommer_type_name
+    def get_id(self):
+        return self.id
+
+    def __str__(self):
+        return self.custommer_type_name
     """
     STOP >>>?
     """
@@ -145,8 +153,9 @@ class DetailsRentalSlip(db.Model):  # Chi tiết phiếu thuê phòng
     address = Column(String(255), nullable=False)
     rental_slip_id = Column(Integer, ForeignKey(RentalSlip.id), nullable=False)
 
-    def __str__(self):
-        return self.custommer_name
+    pass
+
+
 
 
 # ---------------------------------------------------------------------------------

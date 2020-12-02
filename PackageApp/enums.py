@@ -35,6 +35,3 @@ class AvailableTypeOfBed(enum.Enum): # Các chuẩn kiểu giường chỉ có t
     TRPL = "TRIPLE BED ROOM"
 
 
-class CustommerTypeCheck(enum.Enum):
-    ForeignCustomers = "Khách nước ngoài"
-    DomesticCustomers = "Khách trong nước"
