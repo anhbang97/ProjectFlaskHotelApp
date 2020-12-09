@@ -1,6 +1,7 @@
 {% extends 'admin/master.html' %}
 {% block body %}
-     <section class="container">
+<div class="body">
+    <section class="container">
 
                <form class="form" >
                 <div class="row" >
@@ -42,7 +43,7 @@
 
         <table class="table well">
             <caption><h1>DANH SÁCH CÁC PHÒNG</h1></caption>
-            <thead>
+            <thead class="p-3 mb-2 bg-primary text-white">
             <tr class="table__tr">
                 <td class="table__td">STT</td>
                 <td class="table__td">Mã Phòng</td>
@@ -65,7 +66,12 @@
             {% endfor %}
             </tbody>
         </table>
+
+
     </section>
+
+</div>
+
 
 
 

@@ -1,7 +1,11 @@
 {% extends "admin/master.html" %}
 
 {% block body %}
+<div class="body">
+    <p class="" style="color:steel;font-style:italic;font-size:50px; padding-top: 100px;text-shadow: white 2px 2px 1px;" align="center">
+        {{ current_user.fullname}} CNTT&copy; 2020
+    </p>
 
-<h1>{{ current_user.fullname}} CNTT&copy; 2020</h1>
+</div>
 
 {% endblock %} 

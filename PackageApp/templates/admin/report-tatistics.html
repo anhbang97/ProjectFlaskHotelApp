@@ -1,5 +1,161 @@
 {% extends "admin/master.html" %}
-
 {% block body %}
-    <h1>TRANG BÁO CÁO THỐNG KÊ</h1>
-{% endblock%}
+
+<div class="container">
+    <section class="row">
+        <h1>BÁO CÁO DOANH THU THEO LOẠI PHÒNG </h1>
+        <form class="form">
+            <label for="at_month">THÁNG:</label>
+            <select name="at_month">
+                <option value="1" {% if session['at_month'] == '1' %} selected {% endif %} >1</option>
+                <option value="2" {% if session['at_month'] == '2' %} selected {% endif %} >2</option>
+                <option value="3" {% if session['at_month'] == '3' %} selected {% endif %} >3</option>
+                <option value="4" {% if session['at_month'] == '4' %} selected {% endif %} >4</option>
+                <option value="5" {% if session['at_month'] == '5' %} selected {% endif %} >5</option>
+                <option value="6" {% if session['at_month'] == '6' %} selected {% endif %} >6</option>
+                <option value="7" {% if session['at_month'] == '7' %} selected {% endif %} >7</option>
+                <option value="8" {% if session['at_month'] == '8' %} selected {% endif %} >8</option>
+                <option value="9" {% if session['at_month'] == '9' %} selected {% endif %} >9</option>
+                <option value="10" {% if session['at_month'] == '10' %} selected {% endif %} >10</option>
+                <option value="11" {% if session['at_month'] == '11' %} selected {% endif %} >11</option>
+                <option value="12" {% if session['at_month'] == '12' %} selected {% endif %} >12</option>
+            </select>
+            <input style="margin-left:50px;" class="btn-primary " type="submit"/>
+        </form>
+        <h4>Doanh thu tháng: {{ session['at_month'] }}</h4>
+        <table class="table table-bordered">
+             <thead class="p-3 mb-2 bg-primary text-white">
+                <tr>
+                    <td>STT</td>
+                    <td>Loại phòng</td>
+                    <td>Doanh thu</td>
+                    <td>Tỷ lệ</td>
+                </tr>
+             </thead>
+
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>A</td>
+                    <td>{{ kinds_of_room_A }}</td>
+                    <td>
+                        {% if kinds_of_room_A != 0 %}
+                            {{ (kinds_of_room_A*100 / (kinds_of_room_A + kinds_of_room_B + kinds_of_room_C)) | round }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>B</td>
+                    <td>{{ kinds_of_room_B }}</td>
+                    <td>
+                        {% if kinds_of_room_B != 0 %}
+                            {{ (kinds_of_room_B*100 / (kinds_of_room_A + kinds_of_room_B + kinds_of_room_C)) | round }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>{{ kinds_of_room_C }}</td>
+                    <td>
+                        {% if kinds_of_room_C != 0 %}
+                            {{ (kinds_of_room_C*100 / (kinds_of_room_A + kinds_of_room_B + kinds_of_room_C)) | round }}
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+
+    <section class="row">
+        <h1>BÁO CÁO MẬT ĐỘ SỬ DỤNG PHÒNG </h1>
+        <form class="form">
+            <label for="">THÁNG:</label>
+            <select name="" >
+                <option value="1"  >1</option>
+                <option value="2"  >2</option>
+                <option value="3"  >3</option>
+                <option value="4"  >4</option>
+                <option value="5"  >5</option>
+                <option value="6"  >6</option>
+                <option value="7"  >7</option>
+                <option value="8"  >8</option>
+                <option value="9"  >9</option>
+                <option value="10"  >10</option>
+                <option value="11"  >11</option>
+                <option value="12"  >12</option>
+            </select>
+            <input style="margin-left:50px;" class=" btn-primary" type="submit"/>
+        </form>
+        <h4>Doanh thu tháng: </h4>
+        <table class="table table-bordered">
+             <thead class="p-3 mb-2 bg-primary text-white">
+                <tr>
+                    <td>STT</td>
+                    <td>Phòng</td>
+                    <td>Sô ngày thuê</td>
+                    <td>Tỷ lệ</td>
+                </tr>
+             </thead>
+
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>TD01</td>
+                    <td></td>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>TD02</td>
+                    <td></td>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>TD03</td>
+                    <td></td>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>TD04</td>
+                    <td></td>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>TD05</td>
+                    <td></td>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>TD06</td>
+                    <td></td>
+                    <td>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+
+
+
+
+
+{% endblock %}

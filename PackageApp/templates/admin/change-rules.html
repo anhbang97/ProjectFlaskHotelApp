@@ -1,0 +1,30 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+
+<div class="body">
+    <section class="container">
+        <table class="table well">
+            <caption><h1>DANH MỤC QUI ĐỊNH</h1></caption>
+            <thead class="p-3 mb-2 bg-primary text-white">
+            <tr class="table__tr">
+                <td class="table__td">Tên qui định</td>
+                <td class="table__td">Nội dung qui đinh</td>
+                <td class="table__td">Quản lý</td>
+            </tr>
+            </thead>
+            <tbody class="table__tobdy">
+                 {% for b in changetherules %}
+                <tr class="table__tr">
+
+                    <td class="table__td">{{ b.name_change }}</td>
+                    <td class="table__td">{{ b.contents }}</td>
+                    <td class="table__td">{{ b.User.user_name }}</td>
+                    {% endfor %}
+                </tr>
+
+            </tbody>
+        </table>
+    </section>
+</div>
+
+{% endblock %}

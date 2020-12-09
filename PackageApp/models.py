@@ -1,6 +1,8 @@
+from sqlalchemy.sql import Join
+
 from PackageApp import db, StatusOfRoom, AvailableKindsOfRoom, AvailableTypeOfBed, InteriorDesignStyle, \
     ImportFromCountry
-from sqlalchemy import Column, String, Integer, Boolean, Enum, ForeignKey, DateTime,Float
+from sqlalchemy import Column, String, Integer, Boolean, Enum, ForeignKey, DateTime, Float
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
 
@@ -14,6 +16,7 @@ class User(db.Model, UserMixin):
     user_name = Column(String(50), nullable=False)  # Tên đăng nhập
     user_password = Column(String(50), nullable=False)  # Mật khẩu
     user_roles = Column(String(50), nullable=False)  # Phân quyền quản trị
+    change_rules = relationship('ChangeTheRules',backref="User", lazy=True)
 
     def get_id(self):
         return self.id
@@ -90,21 +93,18 @@ class Room(db.Model):  # Phòng
 
     rental_slips = relationship('RentalSlip', backref="Room", lazy=True)
 
-    def get_id(self):
-        return self.id
-
     def __str__(self):
         return self.room_name
 
 
 # Bảng loại khách hàng
 class CustommerType(db.Model):
-    _tablename__ ="custommertype"
+    _tablename__ = "custommertype"
     id = Column(Integer, primary_key=True, autoincrement=True)
     customer_type_name = Column(String(50), nullable=False)
     coefficient = Column(Float, nullable=False)
     note = Column(String(50), nullable=False)
-    rentSlipDetails = relationship('RentalSlip', backref="CustomerType", lazy=True)
+    rentSlipDetails = relationship('RentalSlip', backref="CustommerType", lazy=True)
 
     def __str__(self):
         return self.customer_type_name
@@ -120,7 +120,7 @@ class Surcharge(db.Model):
     rentalSlip = relationship('RentalSlip', backref="Surcharge", lazy=True)
 
     def __str__(self):
-        return self.surcharge_amount.__str__() + " người ~ " + self.surcharge_rate.__str__() + " %"
+        return "Khách hàng thứ "+ self.surcharge_amount.__str__() + " ~  " + self.surcharge_rate.__str__() + " %"
 
 
 # Bảng phiếu thuê
@@ -152,6 +152,15 @@ class Bill(db.Model):  # Hóa đơn
     def __str__(self):
         return self.customer_name
 
+
+#----------------------------------------------------------------------------------
+class ChangeTheRules(db.Model): # Thay đổi quy định
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name_change = Column(String(50), nullable=False)
+    contents = Column(String(300), nullable=False)
+    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+
+    pass
 
 # ---------------------------------------------------------------------------------
 

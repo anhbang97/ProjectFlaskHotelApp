@@ -1,13 +1,45 @@
 
-    {% extends "admin/master.html"%}
+
+ <link rel="stylesheet" href="{{url_for('static', filename='assets/css/style-modal.css')}}">
+    <script src="{{url_for('static', filename='assets/js/style-modals.js')}}"></script>
+
+{% extends "admin/master.html"%}
+
 {% block body %}
     {% if current_user.is_authenticated %}
+        <div class="banner well text-primary" align="center" style="text-shadow: white 2px 2px 1px;">
+            <h1 >Chào mừng {{ current_user.fullname}} đến với trang quản trị!</h1>
+            <h3 class="text-danger">Vai trò: ***** {{current_user.user_roles}} ******</h3>
 
-        <h1>Chào mừng {{ current_user.fullname}} đến với trang quản trị!</h1>
-        <label>Vai trò: "{{current_user.user_roles}}"</label>
+        </div>
+    <div class="body well">
+        <div class="clock">
+    <div class="hourHand"></div>
+    <div class="minuteHand"></div>
+    <div class="sec"><div class="secondHand"></div></div>
+    <div class="center"></div>
+    <div class="red-center center"></div>
+    <ul>
+        <li><span>1</span></li>
+        <li><span>2</span></li>
+        <li><span>3</span></li>
+        <li><span>4</span></li>
+        <li><span>5</span></li>
+        <li><span>6</span></li>
+        <li><span>7</span></li>
+        <li><span>8</span></li>
+        <li><span>9</span></li>
+        <li><span>10</span></li>
+        <li><span>11</span></li>
+        <li><span>12</span></li>
+    </ul>
+  </div>
+    </div>
+
 
     {% else %}
         {% include "admin/loginAD.html" %}
     {% endif%}
 {% endblock %}
+
 
