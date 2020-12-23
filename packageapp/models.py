@@ -1,6 +1,6 @@
 from sqlalchemy.sql import Join
 
-from PackageApp import db, StatusOfRoom, AvailableKindsOfRoom, AvailableTypeOfBed, InteriorDesignStyle, \
+from packageapp import db, StatusOfRoom, AvailableKindsOfRoom, AvailableTypeOfBed, InteriorDesignStyle, \
     ImportFromCountry
 from sqlalchemy import Column, String, Integer, Boolean, Enum, ForeignKey, DateTime, Float
 from flask_login import UserMixin
@@ -41,6 +41,8 @@ class KindsOfRoom(db.Model):  # Loại phòng
 
     def __str__(self):
         return self.kor_name
+
+
 
 
 # --------------------------------------------------------------------------------
@@ -115,7 +117,7 @@ class Surcharge(db.Model):
     __tablename__ = "surcharqe"
     id = Column(Integer,primary_key=True,autoincrement=True)
     surcharge_rate = Column(Integer, nullable=False) # Tỉ lệ phụ thu
-    surcharge_amount = Column(Integer, nullable=False) # Số lượng phụ thu
+    surcharge_amount = Column(Integer, nullable=False) # Số phụ thu dựa theo lượt khách đến.
 
     rentalSlip = relationship('RentalSlip', backref="Surcharge", lazy=True)
 

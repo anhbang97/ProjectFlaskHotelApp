@@ -6,8 +6,8 @@ from wtforms import validators
 from flask_login import current_user, logout_user
 from markupsafe import Markup
 from urllib import request
-from PackageApp.models import *
-from PackageApp import admin, db, dao
+from packageapp.models import *
+from packageapp import admin, db, dao
 from flask import redirect, request, session
 
 import hashlib, math
@@ -90,7 +90,7 @@ class RoomModelView(ModelView):
     column_labels = dict(id="Mã phòng", room_name="Tên phòng", KindsOfRoom="Loại phòng  [Setup]",
                          TypeOfBed="Loại giường  [Setup]", Services="Dịch vụ  [Setup]",
                          img_kor="Hình ảnh loại phòng", img_tob="Hình ảnh loại giường",
-                         room_status="Tình trạng phòng", room_amount="Số lượng phòng", notes="Ghi chú")
+                         room_status="Tình trạng phòng", room_amount="Sức chứa khách", notes="Ghi chú")
     form_columns = ("room_name", "KindsOfRoom", "TypeOfBed", "Services", "img_kor", "img_tob", "room_status",
                     "room_amount", "notes")
     form_excluded_columns = ['rental_slips']
@@ -132,7 +132,7 @@ class SurchargeModelView(ModelView):
     can_view_details = True
     column_list = ["surcharge_amount", "surcharge_rate"]
     column_labels = {
-        "surcharge_amount": "Số lượng phụ thu",
+        "surcharge_amount": "Lượt khách đến",
         "surcharge_rate": "Tỷ lệ Phụ thu theo (%)"
     }
     form_excluded_columns = ['rentalSlip']
@@ -183,7 +183,7 @@ class RentalSlipModeView(ModelView):
 
     def is_accessible(self):
         return current_user.is_authenticated and \
-               (current_user.user_roles == "Admin-(Quản trị viên)")
+               (current_user.user_roles == "Admin-(Quản trị viên)" or "Receptionlist-(Nhân viên tiếp tân)")
 
 
 # ------
@@ -236,6 +236,10 @@ class BillModelView(AuthenticatedView):
                                           (price_by_time + (price_by_time *
                                                             (form.RentalSlip.data.Surcharge.surcharge_rate / 100)))
 
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)" or "Receptionlist-(Nhân viên tiếp tân)")
+
 
 # ------
 class ChangeTheRolesView(ModelView):
@@ -268,6 +272,10 @@ class ChangeRolesView(BaseView):
                            changetherules=dao.dao_change_rule_infor(name_change=ch_name, contents=ch_content,
 
                                                                     user_id=us_id))
+
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)" or "Receptionlist-(Nhân viên tiếp tân)")
 
 
 # ------
@@ -305,6 +313,10 @@ class RoomListView(BaseView):
                                                   room_status=r_status, room_amount=r_amount),
                            room_status=StatusOfRoom)
 
+    def is_accessible(self):
+        return current_user.is_authenticated and \
+               (current_user.user_roles == "Admin-(Quản trị viên)" or "Receptionlist-(Nhân viên tiếp tân)")
+
 
 class ReportView(BaseView):
     @expose("/")
@@ -329,14 +341,14 @@ admin.add_view(RoomListView(name="Danh sách các phòng"))
 admin.add_view(KindsOfRoomModelView(KindsOfRoom, db.session, name="Loại phòng"))
 admin.add_view(TypeOfBedModelView(TypeOfBed, db.session, name="Loại giường"))
 admin.add_view(ServicesModelView(Services, db.session, name="Dịch vụ"))
-admin.add_view(RoomModelView(Room, db.session, name="Quản lý phòng"))
+admin.add_view(RoomModelView(Room, db.session, name="Lập phòng"))
+admin.add_view(SurchargeModelView(Surcharge, db.session, name="Bảng phụ thu"))
 admin.add_view(CustommerTypeModelView(CustommerType, db.session, name="Loại khách hàng"))
 admin.add_view(RentalSlipModeView(RentalSlip, db.session, name="Phiếu thuê phòng"))
 admin.add_view(BillModelView(Bill, db.session, name="Hóa đơn"))
-admin.add_view(SurchargeModelView(Surcharge, db.session, name="Bảng phụ thu"))
 admin.add_view(UserModelView(User, db.session, name="Người dùng"))
 admin.add_view(ReportView(name="Báo báo thống kê"))
 admin.add_view(ChangeTheRolesView(ChangeTheRules, db.session, name="Thay đổi qui định"))
-admin.add_view(ChangeRolesView(name="Quy định của khách sạn"))
+admin.add_view(ChangeRolesView(name="Bảng quy định khách sạn"))
 admin.add_view(AboutUsView(name="Giới thiệu"))
 admin.add_view(LogoutAdminView(name="Đăng xuất"))

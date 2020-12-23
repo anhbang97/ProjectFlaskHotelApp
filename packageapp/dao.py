@@ -1,7 +1,7 @@
 from sqlalchemy import extract
 
 
-from PackageApp.models import *
+from packageapp.models import *
 
 
 def dao_room_info(room_name=None, kinds_of_room_id=None, type_of_bed_id=None, services_id=None, img_kor=None,

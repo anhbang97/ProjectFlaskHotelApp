@@ -1,7 +1,7 @@
 from flask import render_template, redirect, request
-from PackageApp import app, login
+from packageapp import app, login
 from flask_login import login_user
-from PackageApp.admin import *
+from packageapp.admin import *
 
 import hashlib
 
@@ -96,4 +96,4 @@ def user_load(user_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)
